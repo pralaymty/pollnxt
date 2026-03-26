@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1BFD60"/>
+      <stop offset="1" stop-color="#BC8F60"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#g)"/>
+  <rect x="70" y="70" width="1060" height="490" rx="28" fill="rgba(255,255,255,0.14)"/>
+  <text x="120" y="200" fill="#ffffff" font-size="34" font-family="Segoe UI, Arial, sans-serif" opacity="0.9">Education</text>
+  <text x="120" y="270" fill="#ffffff" font-size="56" font-family="Segoe UI, Arial, sans-serif" font-weight="700">Should education be free for all?</text>
+  <text x="120" y="520" fill="#ffffff" font-size="28" font-family="Segoe UI, Arial, sans-serif" opacity="0.85">POLLNXT</text>
+</svg>
