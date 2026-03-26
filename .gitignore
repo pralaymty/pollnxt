@@ -1,4 +1,4 @@
-config/db.php
+config/
 poll_system.sql
 seed_pralay_demo_polls.sql
 pollnxt2-bkp.zip
