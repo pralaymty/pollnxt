@@ -97,7 +97,7 @@ if (isset($pdo) && $pdo instanceof PDO) {
 /* Floating assistant */
 #pollnxt-bot { position: fixed; right: 18px; bottom: 18px; z-index: 1200; font-family: inherit; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
 .bot-toggle { display: flex; align-items: center; gap: 12px; min-width: 220px; background: #ffffff; color: #12263a; border: 1px solid rgba(0, 175, 145, 0.18); padding: 10px 14px 10px 10px; border-radius: 999px; box-shadow: 0 12px 30px rgba(18, 38, 58, 0.16); cursor: pointer; text-align: left; animation: saraPulse 2.6s ease-in-out infinite; }
-.bot-toggle-avatar { width: 52px; height: 52px; flex: 0 0 52px; border-radius: 50%; overflow: hidden; box-shadow: 0 6px 14px rgba(0, 175, 145, 0.28); }
+.bot-toggle-avatar { width: 52px; height: 52px; flex: 0 0 52px; border-radius: 50%; overflow: hidden; border: 3px solid #ffffff; outline: 1px solid rgba(0, 175, 145, 0.28); box-shadow: 0 6px 14px rgba(0, 175, 145, 0.28); background: #ffffff; }
 .bot-toggle-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .bot-toggle-copy { display: flex; flex-direction: column; line-height: 1.2; }
 .bot-toggle-label { font-weight: 700; font-size: 16px; color: #12263a; }
@@ -135,10 +135,10 @@ if (isset($pdo) && $pdo instanceof PDO) {
     }
 }
 
-@media (max-width: 576px) {
-    #pollnxt-bot { right: 12px; bottom: 12px; left: 12px; align-items: stretch; }
-    .bot-toggle { min-width: 0; width: 100%; }
-    .bot-panel { width: 100%; max-width: none; }
+@media (max-width: 991.98px) {
+    #pollnxt-bot { right: 12px; bottom: 12px; left: auto; align-items: flex-end; }
+    .bot-toggle { min-width: 220px; width: auto; max-width: calc(100vw - 24px); }
+    .bot-panel { width: min(360px, calc(100vw - 24px)); max-width: calc(100vw - 24px); }
 }
 </style>
 
