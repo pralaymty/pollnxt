@@ -47,15 +47,43 @@ if (isset($pdo) && $pdo instanceof PDO) {
 
 <!-- Chat BOT: interactive help assistant for common tasks -->
 <div id="pollnxt-bot" aria-live="polite">
-    <button id="botToggle" class="bot-toggle" aria-expanded="false" title="Need help?">Help</button>
+    <button id="botToggle" class="bot-toggle" aria-expanded="false" title="Chat with Sara">
+        <span class="bot-toggle-avatar">
+            <img src="<?php echo $base ?? ''; ?>assets/images/sara-bot.png" alt="Sara chatbot assistant">
+        </span>
+        <span class="bot-toggle-copy">
+            <span class="bot-toggle-label">Chat with Sara</span>
+            <span class="bot-toggle-subtitle">Tap for quick help</span>
+        </span>
+    </button>
     <div id="botPanel" class="bot-panel" role="dialog" aria-hidden="true">
         <div class="bot-header">
-            <strong>POLLNXT Assistant</strong>
-            <button id="botClose" class="bot-close" aria-label="Close">&times;</button>
+            <div class="bot-header-profile">
+                <img src="<?php echo $base ?? ''; ?>assets/images/sara-bot.png" alt="Sara">
+                <div>
+                    <strong>Sara</strong>
+                    <div class="bot-header-status">POLLNXT Assistant</div>
+                </div>
+            </div>
+            <div class="bot-header-actions">
+                <button id="botMute" class="bot-icon-button" type="button" aria-pressed="false" aria-label="Mute speaker">
+                    <i class="fas fa-volume-up" aria-hidden="true"></i>
+                </button>
+                <button id="botClose" class="bot-close" aria-label="Close">&times;</button>
+            </div>
         </div>
         <div class="bot-body">
             <div id="botMessages" class="bot-messages">
-                <div class="bot-message bot-welcome">Hi! I can help with: <ul class="mb-0"><li><button class="bot-quick" data-key="register">How to Register</button></li><li><button class="bot-quick" data-key="login">How to Login</button></li><li><button class="bot-quick" data-key="create">How to Create a Poll</button></li><li><button class="bot-quick" data-key="vote">How to Vote</button></li><li><button class="bot-quick" data-key="share">How to Share</button></li></ul></div>
+                <div class="bot-message bot-welcome">
+                    <div class="bot-message-title">Hi, I'm Sara. I can help with:</div>
+                    <div class="bot-quick-list">
+                        <button class="bot-quick" data-key="register">How to Register</button>
+                        <button class="bot-quick" data-key="login">How to Login</button>
+                        <button class="bot-quick" data-key="create">How to Create a Poll</button>
+                        <button class="bot-quick" data-key="vote">How to Vote</button>
+                        <button class="bot-quick" data-key="share">How to Share</button>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="bot-footer">
@@ -66,17 +94,52 @@ if (isset($pdo) && $pdo instanceof PDO) {
 </div>
 
 <style>
-/* Simple styles for the assistant */
-#pollnxt-bot { position: fixed; right: 18px; bottom: 18px; z-index: 1200; font-family: inherit; }
-.bot-toggle { background: var(--primary); color: #fff; border: none; padding: 12px 14px; border-radius: 999px; box-shadow: 0 6px 18px rgba(0,0,0,0.15); cursor: pointer; }
-.bot-panel { width: 320px; max-width: calc(100vw - 40px); background: #fff; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); margin-bottom: 8px; overflow: hidden; display: none; }
-.bot-header { display:flex; justify-content:space-between; align-items:center; padding:10px 12px; background:#f7f7f8; border-bottom:1px solid #e9ecef; }
-.bot-body { padding:10px; max-height: 300px; overflow:auto; }
-.bot-messages .bot-message { margin-bottom:10px; font-size:14px; }
+/* Floating assistant */
+#pollnxt-bot { position: fixed; right: 18px; bottom: 18px; z-index: 1200; font-family: inherit; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+.bot-toggle { display: flex; align-items: center; gap: 12px; min-width: 220px; background: #ffffff; color: #12263a; border: 1px solid rgba(0, 175, 145, 0.18); padding: 10px 14px 10px 10px; border-radius: 999px; box-shadow: 0 12px 30px rgba(18, 38, 58, 0.16); cursor: pointer; text-align: left; animation: saraPulse 2.6s ease-in-out infinite; }
+.bot-toggle-avatar { width: 52px; height: 52px; flex: 0 0 52px; border-radius: 50%; overflow: hidden; box-shadow: 0 6px 14px rgba(0, 175, 145, 0.28); }
+.bot-toggle-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.bot-toggle-copy { display: flex; flex-direction: column; line-height: 1.2; }
+.bot-toggle-label { font-weight: 700; font-size: 16px; color: #12263a; }
+.bot-toggle-subtitle { font-size: 12px; color: #5c6b7a; }
+.bot-panel { width: 360px; max-width: calc(100vw - 24px); background: #fff; border-radius: 20px; box-shadow: 0 18px 44px rgba(18, 38, 58, 0.22); overflow: hidden; display: none; border: 1px solid rgba(0, 175, 145, 0.16); }
+.bot-header { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px; background: linear-gradient(135deg, #f5fffc 0%, #ecf9f5 100%); border-bottom: 1px solid #e6f2ee; }
+.bot-header-profile { display: flex; align-items: center; gap: 10px; }
+.bot-header-profile img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; display: block; }
+.bot-header-status { font-size: 12px; color: #5c6b7a; }
+.bot-header-actions { display: flex; align-items: center; gap: 6px; }
+.bot-icon-button,
+.bot-close { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 50%; border: 1px solid #d9e7e2; background: #fff; color: #284255; cursor: pointer; }
+.bot-icon-button.is-muted { color: #b02a37; border-color: rgba(176, 42, 55, 0.22); background: #fff4f5; }
+.bot-body { padding: 12px; max-height: 360px; overflow: auto; background: linear-gradient(180deg, #ffffff 0%, #f9fcfb 100%); }
+.bot-messages .bot-message { margin-bottom: 12px; font-size: 14px; line-height: 1.5; }
+.bot-message-title { margin-bottom: 10px; font-weight: 600; color: #183247; }
 .bot-message a { color: var(--primary); text-decoration: underline; }
-.bot-quick { background:transparent; border:1px solid #e9ecef; padding:6px 8px; border-radius:6px; cursor:pointer; }
-.bot-footer { display:flex; padding:10px; border-top:1px solid #e9ecef; }
-.bot-close { background:transparent; border: none; font-size:20px; line-height:1; cursor:pointer; }
+.bot-welcome,
+.bot-assistant { background: #f2fbf8; border: 1px solid #dcefe8; border-radius: 16px 16px 16px 6px; padding: 12px; color: #173347; }
+.bot-user { margin-left: auto; max-width: 85%; background: var(--primary); color: #fff; border-radius: 16px 16px 6px 16px; padding: 10px 12px; }
+.bot-quick-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.bot-quick { background: #ffffff; border: 1px solid #d7ebe5; padding: 8px 10px; border-radius: 999px; cursor: pointer; color: #173347; transition: all 0.2s ease; }
+.bot-quick:hover { background: #eaf8f3; border-color: #b8ddd1; }
+.bot-footer { display: flex; padding: 12px; border-top: 1px solid #e6f2ee; background: #fff; }
+.bot-footer .form-control { border-radius: 12px; }
+
+@keyframes saraPulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 12px 30px rgba(18, 38, 58, 0.16);
+    }
+    50% {
+        transform: scale(1.025);
+        box-shadow: 0 16px 36px rgba(0, 175, 145, 0.24);
+    }
+}
+
+@media (max-width: 576px) {
+    #pollnxt-bot { right: 12px; bottom: 12px; left: 12px; align-items: stretch; }
+    .bot-toggle { min-width: 0; width: 100%; }
+    .bot-panel { width: 100%; max-width: none; }
+}
 </style>
 
 <script>
@@ -84,9 +147,14 @@ if (isset($pdo) && $pdo instanceof PDO) {
     const panel = document.getElementById('botPanel');
     const toggle = document.getElementById('botToggle');
     const closeBtn = document.getElementById('botClose');
+    const muteBtn = document.getElementById('botMute');
     const messages = document.getElementById('botMessages');
     const input = document.getElementById('botInput');
     const send = document.getElementById('botSend');
+    const synth = 'speechSynthesis' in window ? window.speechSynthesis : null;
+    let isMuted = false;
+    let lastSpokenText = '';
+    let selectedVoice = null;
 
     // Canned answers (rendered with server paths)
     const answers = {
@@ -102,17 +170,104 @@ if (isset($pdo) && $pdo instanceof PDO) {
         panel.style.display = open ? 'block' : 'none';
         toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
         panel.setAttribute('aria-hidden', open ? 'false' : 'true');
+        if (!open && synth) {
+            synth.cancel();
+        }
     }
 
     toggle.addEventListener('click', function(){ showPanel(panel.style.display !== 'block'); });
     closeBtn.addEventListener('click', function(){ showPanel(false); });
 
-    function appendMessage(html, isUser) {
+    function appendMessage(html, isUser, speechText) {
         const div = document.createElement('div');
         div.className = 'bot-message' + (isUser ? ' bot-user' : ' bot-assistant');
         div.innerHTML = html;
         messages.appendChild(div);
         messages.scrollTop = messages.scrollHeight;
+        if (!isUser) {
+            speakText(speechText || htmlToSpeechText(html));
+        }
+    }
+
+    function htmlToSpeechText(html) {
+        const temp = document.createElement('div');
+        temp.innerHTML = html;
+        return (temp.textContent || temp.innerText || '').replace(/\s+/g, ' ').trim();
+    }
+
+    function speakText(text) {
+        if (!synth || isMuted || !text) {
+            return;
+        }
+        lastSpokenText = text;
+        synth.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        if (selectedVoice) {
+            utterance.voice = selectedVoice;
+        }
+        utterance.rate = 0.96;
+        utterance.pitch = 1.08;
+        utterance.volume = 1;
+        synth.speak(utterance);
+    }
+
+    function scoreVoice(voice) {
+        const name = (voice.name || '').toLowerCase();
+        const lang = (voice.lang || '').toLowerCase();
+        let score = 0;
+        if (lang.indexOf('en') === 0) score += 5;
+        if (voice.localService) score += 3;
+        if (name.includes('female')) score += 12;
+        if (name.includes('woman')) score += 12;
+        if (name.includes('zira')) score += 11;
+        if (name.includes('samantha')) score += 11;
+        if (name.includes('susan')) score += 10;
+        if (name.includes('victoria')) score += 10;
+        if (name.includes('karen')) score += 10;
+        if (name.includes('moira')) score += 10;
+        if (name.includes('zira')) score += 10;
+        if (name.includes('aria')) score += 10;
+        if (name.includes('jenny')) score += 10;
+        if (name.includes('libby')) score += 10;
+        if (name.includes('sonia')) score += 10;
+        if (name.includes('natasha')) score += 10;
+        if (name.includes('neural')) score += 4;
+        if (name.includes('male')) score -= 12;
+        if (name.includes('man')) score -= 8;
+        if (name.includes('david')) score -= 8;
+        if (name.includes('mark')) score -= 8;
+        if (name.includes('george')) score -= 8;
+        if (name.includes('james')) score -= 8;
+        return score;
+    }
+
+    function pickVoice() {
+        if (!synth) {
+            return;
+        }
+        const voices = synth.getVoices();
+        if (!voices.length) {
+            return;
+        }
+        selectedVoice = voices
+            .slice()
+            .sort(function(a, b){ return scoreVoice(b) - scoreVoice(a); })[0] || null;
+    }
+
+    function setMuted(nextMuted) {
+        isMuted = nextMuted;
+        muteBtn.setAttribute('aria-pressed', nextMuted ? 'true' : 'false');
+        muteBtn.setAttribute('aria-label', nextMuted ? 'Unmute speaker' : 'Mute speaker');
+        muteBtn.classList.toggle('is-muted', nextMuted);
+        muteBtn.innerHTML = nextMuted
+            ? '<i class="fas fa-volume-mute" aria-hidden="true"></i>'
+            : '<i class="fas fa-volume-up" aria-hidden="true"></i>';
+        if (nextMuted && synth) {
+            synth.cancel();
+        }
+        if (!nextMuted && lastSpokenText) {
+            speakText(lastSpokenText);
+        }
     }
 
     document.querySelectorAll('.bot-quick').forEach(function(btn){
@@ -126,6 +281,7 @@ if (isset($pdo) && $pdo instanceof PDO) {
 
     send.addEventListener('click', function(){ handleInput(); });
     input.addEventListener('keydown', function(e){ if (e.key === 'Enter') { e.preventDefault(); handleInput(); } });
+    muteBtn.addEventListener('click', function(){ setMuted(!isMuted); });
 
     function handleInput(){
         const text = input.value.trim();
@@ -145,6 +301,16 @@ if (isset($pdo) && $pdo instanceof PDO) {
 
     // basic input sanitize for display
     function h(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>'); }
+
+    if (!synth) {
+        muteBtn.disabled = true;
+        muteBtn.title = 'Speech is not supported in this browser';
+    } else {
+        pickVoice();
+        if (typeof synth.onvoiceschanged !== 'undefined') {
+            synth.onvoiceschanged = pickVoice;
+        }
+    }
 })();
 </script>
 
