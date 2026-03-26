@@ -81,7 +81,7 @@ $trending_polls = $stmt->fetchAll();
 <!-- Trending Polls -->
 <?php if (!empty($trending_polls)): ?>
 <div class="container mb-5">
-    <h3 class="mb-4"><i class="fas fa-fire me-2" style="color: #d63031;"></i>Trending Pollssssss!abcdxyz Ramya</h3>
+    <h3 class="mb-4"><i class="fas fa-fire me-2" style="color: #d63031;"></i>Trending Poll Ramya</h3>
 
     <style>
         /* ── Equal-height cards ── */
