@@ -82,6 +82,25 @@ require_once __DIR__ . '/includes/header.php';
 <?php endif; ?>
 
 <div class="card p-3">
+    <div class="row g-2 align-items-center mb-3">
+        <div class="col-md-6 col-lg-5">
+            <label for="pollSearchInput" class="form-label small text-muted mb-1">Search by poll or author</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                <input
+                    type="text"
+                    id="pollSearchInput"
+                    class="form-control"
+                    placeholder="Type poll question or author name..."
+                    autocomplete="off"
+                >
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-7">
+            <div id="pollSearchMeta" class="small text-muted pt-md-4">Showing all polls</div>
+        </div>
+    </div>
+
     <div class="table-responsive">
         <table class="table align-middle">
             <thead>
@@ -94,9 +113,12 @@ require_once __DIR__ . '/includes/header.php';
                     <th class="text-end">Actions</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="pollsTableBody">
             <?php foreach ($polls as $p): ?>
-                <tr>
+                <tr
+                    data-search-poll="<?php echo admin_h(mb_strtolower((string)($p['question'] ?? ''))); ?>"
+                    data-search-author="<?php echo admin_h(mb_strtolower((string)($p['author_name'] ?? ''))); ?>"
+                >
                     <?php
                         $img = trim((string)($p['image_path'] ?? ''));
                         $img_src = $img !== ''
@@ -174,6 +196,9 @@ require_once __DIR__ . '/includes/header.php';
             <?php endforeach; ?>
             </tbody>
         </table>
+        <div id="pollSearchEmpty" class="text-center py-4 text-muted d-none">
+            <i class="fas fa-search me-2"></i>No polls matched your search.
+        </div>
     </div>
 </div>
 
@@ -237,6 +262,41 @@ document.querySelectorAll('.delete-poll-btn').forEach(btn => {
         }
     });
 });
+
+const pollSearchInput = document.getElementById('pollSearchInput');
+const pollSearchMeta = document.getElementById('pollSearchMeta');
+const pollSearchEmpty = document.getElementById('pollSearchEmpty');
+const pollRows = Array.from(document.querySelectorAll('#pollsTableBody tr'));
+
+function updatePollSearch() {
+    if (!pollSearchInput) return;
+
+    const query = pollSearchInput.value.trim().toLowerCase();
+    let visibleCount = 0;
+
+    pollRows.forEach(row => {
+        const pollText = row.dataset.searchPoll || '';
+        const authorText = row.dataset.searchAuthor || '';
+        const matches = query === '' || pollText.includes(query) || authorText.includes(query);
+        row.style.display = matches ? '' : 'none';
+        if (matches) visibleCount += 1;
+    });
+
+    if (pollSearchMeta) {
+        pollSearchMeta.textContent = query === ''
+            ? `Showing all polls (${pollRows.length})`
+            : `Showing ${visibleCount} of ${pollRows.length} polls`;
+    }
+
+    if (pollSearchEmpty) {
+        pollSearchEmpty.classList.toggle('d-none', visibleCount !== 0);
+    }
+}
+
+if (pollSearchInput) {
+    pollSearchInput.addEventListener('input', updatePollSearch);
+    updatePollSearch();
+}
 </script>
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>
