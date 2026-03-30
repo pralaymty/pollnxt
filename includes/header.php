@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../config/db.php';
 $current_page = basename($_SERVER['PHP_SELF']);
 ?>
-<!DOCTYPE html>
+<!DOCTYPE html>  
 <html lang="en">
 <head>
     <meta charset="UTF-8">
