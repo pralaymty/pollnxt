@@ -97,11 +97,16 @@ require_once __DIR__ . '/includes/header.php';
             <tbody>
             <?php foreach ($polls as $p): ?>
                 <tr>
-                    <?php $img = $p['image_path'] ?? ''; ?>
+                    <?php
+                        $img = trim((string)($p['image_path'] ?? ''));
+                        $img_src = $img !== ''
+                            ? (preg_match('#^https?://#i', $img) ? $img : '../' . ltrim($img, '/'))
+                            : 'https://via.placeholder.com/80x80/00AF91/FFFFFF?text=POLL';
+                    ?>
                     <td style="max-width: 420px;">
                         <div style="display:flex; gap:12px; align-items:flex-start;">
                             <img
-                                src="<?php echo h($img !== '' ? $img : 'https://via.placeholder.com/80x80/00AF91/FFFFFF?text=POLL'); ?>"
+                                src="<?php echo admin_h($img_src); ?>"
                                 alt="Poll image"
                                 style="width:80px; height:80px; border-radius:12px; object-fit:cover; flex-shrink:0; border:1px solid rgba(15,23,42,.08);"
                             />
