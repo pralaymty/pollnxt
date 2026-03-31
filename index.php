@@ -31,7 +31,7 @@ $trending_polls = $stmt->fetchAll();
 <!-- Hero Section -->
 <section class="hero-section">
     <div class="container text-center">
-        <h1>Create & Share Polls Instantly</h1>
+        <h1>Create & Share Polls Instantlyy</h1>
         <p class="lead mb-4">Create polls in seconds, share with a simple link, and track live results as people vote.</p>
         <div class="d-flex justify-content-center gap-3 flex-wrap">
             <?php if (is_logged_in()): ?>
