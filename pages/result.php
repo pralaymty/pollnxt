@@ -93,8 +93,9 @@ $img_src    = $img !== ''
 
                     <div class="row mt-4">
                         <div class="col-md-6">
-                            <?php foreach ($options as $opt):
+                            <?php foreach ($options as $idx => $opt):
                                 $pct = $total_votes > 0 ? round(($opt['votes'] / $total_votes) * 100) : 0;
+                                $bar_color = $colors[$idx % count($colors)];
                             ?>
                                 <div class="result-option">
                                     <div class="option-header">
@@ -102,9 +103,9 @@ $img_src    = $img !== ''
                                         <span class="option-votes"><?php echo $opt['votes']; ?> votes &mdash; <?php echo $pct; ?>%</span>
                                     </div>
                                     <div class="progress">
-                                        <div class="progress-bar bg-primary" 
+                                        <div class="progress-bar"
                                              role="progressbar" 
-                                             style="width: <?php echo $pct; ?>%"
+                                             style="width: <?php echo $pct; ?>%; background-color: <?php echo h($bar_color); ?>;"
                                              aria-valuenow="<?php echo $pct; ?>" 
                                              aria-valuemin="0" 
                                              aria-valuemax="100">

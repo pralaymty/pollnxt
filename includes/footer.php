@@ -47,6 +47,7 @@ if (isset($pdo) && $pdo instanceof PDO) {
 
 <!-- Chat BOT: interactive help assistant for common tasks -->
 <div id="pollnxt-bot" aria-live="polite">
+    <button id="botDismiss" class="bot-dismiss" type="button" aria-label="Minimize Sara chatbot">&times;</button>
     <button id="botToggle" class="bot-toggle" aria-expanded="false" title="Chat with Sara">
         <span class="bot-toggle-avatar">
             <img src="<?php echo $base ?? ''; ?>assets/images/sara-bot.png" alt="Sara chatbot assistant">
@@ -55,6 +56,9 @@ if (isset($pdo) && $pdo instanceof PDO) {
             <span class="bot-toggle-label">Chat with Sara</span>
             <span class="bot-toggle-subtitle">Tap for quick help</span>
         </span>
+    </button>
+    <button id="botMiniToggle" class="bot-mini-toggle" type="button" aria-label="Open Sara chatbot" title="Open support chat">
+        <i class="fas fa-headset" aria-hidden="true"></i>
     </button>
     <div id="botPanel" class="bot-panel" role="dialog" aria-hidden="true">
         <div class="bot-header">
@@ -96,7 +100,11 @@ if (isset($pdo) && $pdo instanceof PDO) {
 <style>
 /* Floating assistant */
 #pollnxt-bot { position: fixed; right: 18px; bottom: 18px; z-index: 1200; font-family: inherit; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+.bot-dismiss { position: absolute; top: -6px; right: -6px; width: 22px; height: 22px; border: 0; border-radius: 50%; background: #1f2d3f; color: #fff; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 6px 14px rgba(18, 38, 58, 0.22); cursor: pointer; line-height: 1; font-size: 14px; z-index: 2; }
+.bot-dismiss:hover { background: #12263a; }
 .bot-toggle { display: flex; align-items: center; gap: 12px; min-width: 220px; background: #ffffff; color: #12263a; border: 1px solid rgba(0, 175, 145, 0.18); padding: 10px 14px 10px 10px; border-radius: 999px; box-shadow: 0 12px 30px rgba(18, 38, 58, 0.16); cursor: pointer; text-align: left; animation: saraPulse 2.6s ease-in-out infinite; }
+.bot-mini-toggle { width: 58px; height: 58px; border: 0; border-radius: 50%; background: linear-gradient(135deg, #00af91 0%, #00cec9 100%); color: #fff; display: none; align-items: center; justify-content: center; box-shadow: 0 14px 30px rgba(0, 175, 145, 0.3); cursor: pointer; animation: saraPulse 2.6s ease-in-out infinite; }
+.bot-mini-toggle i { font-size: 22px; }
 .bot-toggle-avatar { width: 52px; height: 52px; flex: 0 0 52px; border-radius: 50%; overflow: hidden; border: 3px solid #ffffff; outline: 1px solid rgba(0, 175, 145, 0.28); box-shadow: 0 6px 14px rgba(0, 175, 145, 0.28); background: #ffffff; }
 .bot-toggle-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .bot-toggle-copy { display: flex; flex-direction: column; line-height: 1.2; }
@@ -145,7 +153,10 @@ if (isset($pdo) && $pdo instanceof PDO) {
 <script>
 (function(){
     const panel = document.getElementById('botPanel');
+    const bot = document.getElementById('pollnxt-bot');
     const toggle = document.getElementById('botToggle');
+    const miniToggle = document.getElementById('botMiniToggle');
+    const dismissBtn = document.getElementById('botDismiss');
     const closeBtn = document.getElementById('botClose');
     const muteBtn = document.getElementById('botMute');
     const messages = document.getElementById('botMessages');
@@ -175,8 +186,24 @@ if (isset($pdo) && $pdo instanceof PDO) {
         }
     }
 
+    function setMinimized(minimized) {
+        toggle.style.display = minimized ? 'none' : 'flex';
+        dismissBtn.style.display = minimized ? 'none' : 'inline-flex';
+        panel.style.display = minimized ? 'none' : panel.style.display;
+        panel.setAttribute('aria-hidden', minimized ? 'true' : panel.getAttribute('aria-hidden'));
+        miniToggle.style.display = minimized ? 'inline-flex' : 'none';
+        if (minimized && synth) {
+            synth.cancel();
+        }
+        try {
+            window.sessionStorage.setItem('pollnxtSaraMinimized', minimized ? '1' : '0');
+        } catch (e) {}
+    }
+
     toggle.addEventListener('click', function(){ showPanel(panel.style.display !== 'block'); });
     closeBtn.addEventListener('click', function(){ showPanel(false); });
+    dismissBtn.addEventListener('click', function(){ setMinimized(true); });
+    miniToggle.addEventListener('click', function(){ setMinimized(false); });
 
     function appendMessage(html, isUser, speechText) {
         const div = document.createElement('div');
@@ -311,6 +338,12 @@ if (isset($pdo) && $pdo instanceof PDO) {
             synth.onvoiceschanged = pickVoice;
         }
     }
+
+    try {
+        if (window.sessionStorage.getItem('pollnxtSaraMinimized') === '1') {
+            setMinimized(true);
+        }
+    } catch (e) {}
 })();
 </script>
 
