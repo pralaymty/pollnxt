@@ -109,6 +109,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$already_voted && !$vote_disabled)
 $cat_class      = 'cat-' . strtolower($poll['category']);
 $blocked_reason = (string)($poll['blocked_reason'] ?? '');
 $img            = $poll['image_path'] ?? '';
+$display_name   = (string)$poll['author_name'];
+if (!$is_creator) {
+    $display_name = mask_name($display_name);
+}
 $img_src        = $img !== ''
     ? (strncmp($img, 'http', 4) === 0 ? $img : $base . $img)
     : 'https://via.placeholder.com/300x300/00AF91/FFFFFF?text=POLL';
@@ -151,7 +155,7 @@ $img_src        = $img !== ''
                         <div class="poll-with-image-content">
                             <div class="d-flex justify-content-between align-items-start mb-2">
                                 <span class="category-badge <?php echo $cat_class; ?>"><?php echo h($poll['category']); ?></span>
-                                <small class="text-muted"><i class="fas fa-user me-1"></i><?php echo h($poll['author_name']); ?></small>
+                                <small class="text-muted"><i class="fas fa-user me-1"></i><?php echo h($display_name); ?></small>
                             </div>
                             <h4 class="mb-0"><?php echo h($poll['question']); ?></h4>
                             <?php if ((int)$poll['is_blocked'] === 1 && !empty($poll['blocked_reason'])): ?>
