@@ -23,7 +23,7 @@ if ($client_id === '') {
 $state = bin2hex(random_bytes(16));
 $_SESSION['google_oauth_state'] = $state;
 
-$redirect_uri = base_url() . '/Pollnxt2/poll-system/auth/google_callback.php';
+$redirect_uri = base_url() . '/pollnxt/beta-v3/auth/google_callback.php';
 
 $params = [
     'client_id' => $client_id,

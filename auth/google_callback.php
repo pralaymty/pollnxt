@@ -62,7 +62,7 @@ if ($client_id === '' || $client_secret === '') {
     redirect('../auth/login.php');
 }
 
-$redirect_uri = base_url() . '/Pollnxt2/poll-system/auth/google_callback.php';
+$redirect_uri = base_url() . '/pollnxt/beta-v3/auth/google_callback.php';
 
 $token = http_post_form('https://oauth2.googleapis.com/token', [
     'code' => $code,
