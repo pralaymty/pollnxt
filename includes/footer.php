@@ -152,23 +152,6 @@ if (isset($pdo) && $pdo instanceof PDO) {
 
 <script>
 (function(){
-    document.querySelectorAll('.copy-share-link').forEach(function(btn){
-        btn.addEventListener('click', function(){
-            var url = btn.getAttribute('data-share-url') || '';
-            if (!url) return;
-            function done() {
-                var old = btn.innerHTML;
-                btn.innerHTML = '<i class="fas fa-check me-1"></i>Copied';
-                setTimeout(function(){ btn.innerHTML = old; }, 1800);
-            }
-            if (navigator.clipboard && window.isSecureContext) {
-                navigator.clipboard.writeText(url).then(done).catch(function(){ window.prompt('Copy poll link:', url); });
-            } else {
-                window.prompt('Copy poll link:', url);
-            }
-        });
-    });
-
     const panel = document.getElementById('botPanel');
     const bot = document.getElementById('pollnxt-bot');
     const toggle = document.getElementById('botToggle');
