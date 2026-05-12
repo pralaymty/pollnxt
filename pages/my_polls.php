@@ -8,6 +8,7 @@ if (!is_logged_in()) {
 }
 
 $user_id = (int)$_SESSION['user_id'];
+$absBaseUrl = app_base_url();
 
 $stmt = $pdo->prepare("
     SELECT p.*, 
@@ -37,9 +38,10 @@ $polls = $stmt->fetchAll();
             <?php foreach ($polls as $poll):
                 $cat_class  = 'cat-' . strtolower($poll['category']);
                 $total      = (int)$poll['total_votes'];
-                $vote_url   = $base . 'pages/vote.php?id=' . $poll['id'];
+                $share_page_url = $absBaseUrl . '/pages/view_poll.php?id=' . (int)$poll['id'];
                 $share_text = urlencode($poll['question'] . ' - Vote on this poll at POLLNXT');
-                $share_url  = urlencode($vote_url);
+                $share_url  = urlencode($share_page_url);
+                $can_share_on_facebook = is_public_share_url($share_page_url);
             ?>
                 <div class="col-md-6 col-lg-4 mb-4 poll-card-wrap">
                     <?php if (!empty($poll['end_date'])): ?>
@@ -83,11 +85,20 @@ $polls = $stmt->fetchAll();
                                     </a>
                                 </div>
                                 <div class="d-flex gap-2 share-links">
-                                    <a class="btn btn-outline-secondary btn-sm flex-fill"
-                                       href="https://www.facebook.com/sharer/sharer.php?u=<?php echo $share_url; ?>"
-                                       target="_blank" rel="noopener">
-                                        <i class="fab fa-facebook-f me-1"></i>Facebook
-                                    </a>
+                                    <?php if ($can_share_on_facebook): ?>
+                                        <a class="btn btn-outline-secondary btn-sm flex-fill"
+                                           href="<?php echo h(facebook_share_url($share_page_url)); ?>"
+                                           target="_blank" rel="noopener">
+                                            <i class="fab fa-facebook-f me-1"></i>Post to Facebook
+                                        </a>
+                                    <?php else: ?>
+                                        <button class="btn btn-outline-secondary btn-sm flex-fill copy-share-link"
+                                                type="button"
+                                                data-share-url="<?php echo h($share_page_url); ?>"
+                                                title="Facebook cannot share localhost URLs. Copy this link after setting a public site URL.">
+                                            <i class="fab fa-facebook-f me-1"></i>Copy Link
+                                        </button>
+                                    <?php endif; ?>
                                     <a class="btn btn-outline-secondary btn-sm flex-fill"
                                        href="https://twitter.com/intent/tweet?url=<?php echo $share_url; ?>&text=<?php echo $share_text; ?>"
                                        target="_blank" rel="noopener">

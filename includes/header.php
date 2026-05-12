@@ -19,6 +19,9 @@ $current_page = basename($_SERVER['PHP_SELF']);
     }
     ?>
     <link href="<?php echo $base; ?>style.css" rel="stylesheet">
+    <?php if (!empty($extra_head)): ?>
+        <?php echo $extra_head; ?>
+    <?php endif; ?>
 </head>
 <body>
 

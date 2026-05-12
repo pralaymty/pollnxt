@@ -5,15 +5,7 @@ require_once __DIR__ . '/../includes/header.php';
 $categories = ['Technology', 'Sports', 'Politics', 'Education', 'Entertainment', 'Other'];
 $filter_cat = isset($_GET['category']) ? trim($_GET['category']) : '';
 
-// Absolute base URL for social-share links
-$scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-$host = $_SERVER['HTTP_HOST'] ?? 'localhost';
-$scriptName = $_SERVER['SCRIPT_NAME'] ?? '';
-$pollSystemRoot = preg_replace('#/pages/all_polls\\.php$#', '', $scriptName);
-if ($pollSystemRoot === $scriptName) {
-    $pollSystemRoot = preg_replace('#/pages/.*$#', '', $scriptName);
-}
-$absBaseUrl = $scheme . '://' . $host . $pollSystemRoot;
+$absBaseUrl = app_base_url();
 
 // Build query (only active polls)
 $sql = "SELECT p.*, u.name AS author_name, 
@@ -111,23 +103,33 @@ $polls = $stmt->fetchAll();
                             </div>
 
                             <?php
-                                $voteUrl      = $absBaseUrl . '/pages/vote.php?id='   . (int)$poll['id'];
+                                $shareUrl     = $absBaseUrl . '/pages/view_poll.php?id=' . (int)$poll['id'];
                                 $shareTextEnc = urlencode($poll['question']);
+                                $canShareOnFacebook = is_public_share_url($shareUrl);
                             ?>
                             <?php if ($is_creator): ?>
                             <div class="mt-2 d-flex gap-2 flex-wrap">
+                                <?php if ($canShareOnFacebook): ?>
+                                    <a class="btn btn-outline-secondary btn-sm flex-fill"
+                                       href="<?php echo h(facebook_share_url($shareUrl)); ?>"
+                                       target="_blank" rel="noopener">
+                                        <i class="fab fa-facebook-f me-1"></i>Post to Facebook
+                                    </a>
+                                <?php else: ?>
+                                    <button class="btn btn-outline-secondary btn-sm flex-fill copy-share-link"
+                                            type="button"
+                                            data-share-url="<?php echo h($shareUrl); ?>"
+                                            title="Facebook cannot share localhost URLs. Copy this link after setting a public site URL.">
+                                        <i class="fab fa-facebook-f me-1"></i>Copy Link
+                                    </button>
+                                <?php endif; ?>
                                 <a class="btn btn-outline-secondary btn-sm flex-fill"
-                                   href="https://www.facebook.com/sharer/sharer.php?u=<?php echo urlencode($voteUrl); ?>"
-                                   target="_blank" rel="noopener">
-                                    <i class="fab fa-facebook-f me-1"></i>Facebook
-                                </a>
-                                <a class="btn btn-outline-secondary btn-sm flex-fill"
-                                   href="https://twitter.com/intent/tweet?url=<?php echo urlencode($voteUrl); ?>&text=<?php echo $shareTextEnc; ?>"
+                                   href="https://twitter.com/intent/tweet?url=<?php echo urlencode($shareUrl); ?>&text=<?php echo $shareTextEnc; ?>"
                                    target="_blank" rel="noopener">
                                     <i class="fab fa-x-twitter me-1"></i>Twitter/X
                                 </a>
                                 <a class="btn btn-outline-secondary btn-sm flex-fill"
-                                   href="https://www.linkedin.com/sharing/share-offsite/?url=<?php echo urlencode($voteUrl); ?>"
+                                   href="https://www.linkedin.com/sharing/share-offsite/?url=<?php echo urlencode($shareUrl); ?>"
                                    target="_blank" rel="noopener">
                                     <i class="fab fa-linkedin-in me-1"></i>LinkedIn
                                 </a>
